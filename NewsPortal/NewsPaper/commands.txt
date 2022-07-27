@@ -1,0 +1,96 @@
+### Импортируем модели ###
+from news.models import *
+
+### Создаем двух пользователей ###
+User.objects.create_user('Alex')
+User.objects.create_user('Michael')
+
+### Создаем два объекта модели Author, связанные с User ###
+Author.objects.create(name='Alex Black', user_id=1)
+Author.objects.create(name='Michael White', user_id=2)
+
+### Добавляем 4 категории в модель Category ###
+Category.objects.create(name='Politics')
+Category.objects.create(name='Music')
+Category.objects.create(name='Sport')
+Category.objects.create(name='Education')
+
+### Добавляем 2 статьи и 1 новость ###
+Post.objects.create(category = 'news', name = '''Republicans' Senate campaign boss just admitted his candidates have a money problem''', text = '''Rick Scott is in charge of winning back the Senate majority for Republicans this November.
+
+And he's worried.
+"Look, we have great candidates, we have every reason to believe we can win," the Florida senator said in a speech at the America First Policy Institute summit on Monday. "The issue we've got is we've got to raise money."
+Scott, who runs the Senate Republicans' campaign arm, is pointing to the vast fundraising deficit that some of the top-tier Republican candidates face with less than four months before the midterm elections.
+A few examples:
+In Georgia, Democratic Sen. Raphael Warnock raised $17.2 million between April 1 and June 30, ending the period with more than $22.2 million in the bank. By contrast, Republican Herschel Walker had just $6.8 million on hand.
+In Arizona, Democratic Sen. Mark Kelly raised nearly $13.6 million during the second quarter and ended June with roughly $25 million in the bank. Republicans remain mired in a divisive and costly primary that won't conclude until next month.
+And it's not just Democratic incumbents raking in cash for their Senate races. in Pennsylvania, Democratic nominee John Fetterman raised nearly $11 million over the three-month period, doubling what celebrity doctor Mehmet Oz, the Republican nominee, brought in. Even in Ohio, a GOP-leaning state, Democrat Tim Ryan outraised Republican J.D. Vance by a 9-1 margin from April through the end of June.
+Now, it's worth noting here that money isn't always determinative in Senate races (I wrote about that recently here). And there are plenty of super PACs and outside groups that might help close the money gap.
+But even with all that said, it's absolutely noteworthy that Scott, the Republican senator charged with overseeing these campaigns, decided to publicly admit that the party and its candidates have a fundraising problem.
+Scott's move is strategic. He is hoping to wake up Republican donors (and the candidates they give to) to the fact that they are facing a serious deficit in the money fight at the moment.
+The reality, however, is that time is running out for Republicans in the cash dash. TV ads are already running in a number of states -- Ryan, for example, has already spent millions on commercials -- and ad time for the fall is starting to look scarce.''', author_id=1)
+
+Post.objects.create(category = 'post', name = """Using Major and Minor 6th Intervals to Make Your Music Sound 'Sweeter'""", text = """I guarantee that the interval you use the most is the perfect fifth. In fact, the power chords today completely replace major, minor, and even more complex 7th chords. While this is most definitely practical for writing catchy and simple music and by saying simple I mean that in the best way possible, there are a lot of expressive qualities that you could miss out on""", author_id=2)
+
+Post.objects.create(category = 'post', name = """The Best Way to Learn Triad Chord Shapes on Guitar""", text = """Triads open up the fretboard to you as far as chords are concerned. They also provide you with a better more complete understanding of chords and how they work on the guitar.
+In this lesson, you learn major and minor triads on the top 3 strings, known as 3, 2, 1 triad shapes.
+First, you learn each shape in isolation, then how to arrange a progression via two training strategies using the triads:
+1. By Shape
+This strategy involves arranging the progression with a single triad shape.
+2. By Position
+This strategy has you using a variety of triad shapes for the progression so you remain in the same area of the fretboard.
+Using both strategies will ensure you get triad shapes down into your playing, always knowing where they are so you can use them with ease.""", author_id=2)
+
+### Присваиваем категории ###
+PostCategory.objects.create(post_id=1, category_id=1)
+PostCategory.objects.create(post_id=2, category_id=2)
+PostCategory.objects.create(post_id=3, category_id=2)
+PostCategory.objects.create(post_id=3, category_id=4)
+
+### Создаем 4 комментария ###
+Comment.objects.create(post_id=1, user_id=2, text = """Wow, that's interesting!""")
+Comment.objects.create(post_id=2, user_id=1, text = """That's a nice article""")
+Comment.objects.create(post_id=2, user_id=2, text = """Thanks dude!""")
+Comment.objects.create(post_id=3, user_id=1, text = """Lovely article!""")
+
+### Корректируем рейтинг ###
+Post.objects.all()
+first = Post.objects.all()[0]
+first.like()
+second = Post.objects.all()[1]
+second.like()
+second.like()
+third = Post.objects.all()[2]
+third.like()
+
+Comment.objects.all()
+a = Comment.objects.all()[0]
+a.like()
+b = Comment.objects.all()[1]
+b.like()
+b.like()
+c = Comment.objects.all()[2]
+c.like()
+d = Comment.objects.all()[3]
+d.like()
+d.like()
+
+### Обновляем рейтинги ###
+Author.objects.all()
+a = Author.objects.all()[0]
+a.update_rating()
+b = Author.objects.all()[1]
+b.update_rating()
+
+
+### Выводим имя и рейтинг лучшего пользователя ###
+Author.objects.all().order_by('-rating').values('name', 'rating')[0]
+
+### Выводим информацию о лучшей статье ###
+Post.objects.all().order_by('-rating').values('time', 'author', 'rating', 'name')[0]
+a = Post.objects.all().order_by('-rating')[0]
+a.preview()
+
+### Выводим комментарии к ней ###
+Post.objects.all().order_by('-rating').values('id')[0]
+Comment.objects.filter(post_id=2).values('time', 'user', 'rating', 'text')
